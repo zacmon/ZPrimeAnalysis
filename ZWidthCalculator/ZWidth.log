@@ -1,0 +1,110 @@
+10GeV, 0.1 width= 0.0323561
+10GeV, 0.2 width= 0.129424
+10GeV, 0.3 width= 0.291205
+10GeV, 0.4 width= 0.517698
+10GeV, 0.5 width= 0.808903
+10GeV, 0.6 width= 1.16482
+10GeV, 0.7 width= 1.58545
+10GeV, 0.8 width= 2.07079
+10GeV, 0.9 width= 2.62085
+
+20GeV, 0.1 width= 0.0758612
+20GeV, 0.2 width= 0.303445
+20GeV, 0.3 width= 0.68275
+20GeV, 0.4 width= 1.21378
+20GeV, 0.5 width= 1.89653
+20GeV, 0.6 width= 2.731
+20GeV, 0.7 width= 3.7172
+20GeV, 0.8 width= 4.85511
+20GeV, 0.9 width= 6.14475
+
+30GeV, 0.1 width= 0.116889
+30GeV, 0.2 width= 0.467555
+30GeV, 0.3 width= 1.052
+30GeV, 0.4 width= 1.87022
+30GeV, 0.5 width= 2.92222
+30GeV, 0.6 width= 4.20799
+30GeV, 0.7 width= 5.72754
+30GeV, 0.8 width= 7.48087
+30GeV, 0.9 width= 9.46798
+
+40GeV, 0.1 width= 0.157297
+40GeV, 0.2 width= 0.629187
+40GeV, 0.3 width= 1.41567
+40GeV, 0.4 width= 2.51675
+40GeV, 0.5 width= 3.93242
+40GeV, 0.6 width= 5.66268
+40GeV, 0.7 width= 7.70754
+40GeV, 0.8 width= 10.067
+40GeV, 0.9 width= 12.741
+
+50GeV, 0.1 width= 0.197457
+50GeV, 0.2 width= 0.789829
+50GeV, 0.3 width= 1.77711
+50GeV, 0.4 width= 3.15931
+50GeV, 0.5 width= 4.93643
+50GeV, 0.6 width= 7.10846
+50GeV, 0.7 width= 9.6754
+50GeV, 0.8 width= 12.6373
+50GeV, 0.9 width= 15.994
+
+60GeV, 0.1 width= 0.237494
+60GeV, 0.2 width= 0.949975
+60GeV, 0.3 width= 2.13744
+60GeV, 0.4 width= 3.7999
+60GeV, 0.5 width= 5.93734
+60GeV, 0.6 width= 8.54977
+60GeV, 0.7 width= 11.6372
+60GeV, 0.8 width= 15.1996
+60GeV, 0.9 width= 19.237
+
+70GeV, 0.1 width= 0.277459
+70GeV, 0.2 width= 1.10984
+70GeV, 0.3 width= 2.49713
+70GeV, 0.4 width= 4.43935
+70GeV, 0.5 width= 6.93648
+70GeV, 0.6 width= 9.98854
+70GeV, 0.7 width= 13.5955
+70GeV, 0.8 width= 17.7574
+70GeV, 0.9 width= 22.4742
+
+80GeV, 0.1 width= 0.317381
+80GeV, 0.2 width= 1.26952
+80GeV, 0.3 width= 2.85643
+80GeV, 0.4 width= 5.07809
+80GeV, 0.5 width= 7.93452
+80GeV, 0.6 width= 11.4257
+80GeV, 0.7 width= 15.5517
+80GeV, 0.8 width= 20.3124
+80GeV, 0.9 width= 25.7078
+
+90GeV, 0.1 width= 0.357273
+90GeV, 0.2 width= 1.42909
+90GeV, 0.3 width= 3.21545
+90GeV, 0.4 width= 5.71636
+90GeV, 0.5 width= 8.93182
+90GeV, 0.6 width= 12.8618
+90GeV, 0.7 width= 17.5064
+90GeV, 0.8 width= 22.8655
+90GeV, 0.9 width= 28.9391
+
+100GeV, 0.1 width= 0.397144
+100GeV, 0.2 width= 1.58858
+100GeV, 0.3 width= 3.5743
+100GeV, 0.4 width= 6.35431
+100GeV, 0.5 width= 9.9286
+100GeV, 0.6 width= 14.2972
+100GeV, 0.7 width= 19.4601
+100GeV, 0.8 width= 25.4172
+100GeV, 0.9 width= 32.1687
+
+250GeV, 0.1 width= 0.994421
+250GeV, 0.2 width= 3.97768
+250GeV, 0.3 width= 8.94979
+250GeV, 0.4 width= 15.9107
+250GeV, 0.5 width= 24.8605
+250GeV, 0.6 width= 35.7992
+250GeV, 0.7 width= 48.7266
+250GeV, 0.8 width= 63.6429
+250GeV, 0.9 width= 80.5481
+
