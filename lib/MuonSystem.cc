@@ -1,11 +1,8 @@
 #include "MuonSystem.h"
 
-#include <cstdlib>
+#include <cmath>
 
 #include <TLorentzVector.h>
-
-MuonSystem::MuonSystem() {
-}
 
 MuonSystem::MuonSystem(TClonesArray* branchMuon) {
     if (!isEmptyBranch(branchMuon)) {
@@ -21,9 +18,7 @@ MuonSystem::~MuonSystem() {
 
 bool MuonSystem::isEmptyBranch(TClonesArray* branch) {
     if (!branch) {
-	std::cout << "Muon branch does not exist!" << std::endl;
-	return 0;
-	
+	return 0;	
     }
     else {
 	return branch->GetEntriesFast() == 0;
@@ -58,21 +53,29 @@ bool MuonSystem::isIsolated(Muon* muon, std::vector<Track*> tracks) {
 }
 
 void MuonSystem::cutUnisolatedMuons(std::vector<Track*> tracks) {
-    for (auto it(muons.begin()); it != muons.end(); ++it) {
-	if (!isIsolated(*it, tracks)) {
-	    muons.erase(it);
+    unsigned int i = 0;
+    while (i < muons.size()) {
+	if (!isIsolated(muons[i], tracks)) {
+	    muons.erase(muons.begin() + i);
+	}
+	else {
+            i++;
 	}
     }
 }
 
 bool MuonSystem::isWithinEta(Muon* muon, double eta) {
-    return abs(muon->P4().Eta()) < eta;
+    return std::abs(muon->P4().Eta()) < eta;
 }
 
 void MuonSystem::cutEta(double eta) {
-    for (auto it(muons.begin()); it != muons.end(); ++it) {
-	if (!isWithinEta(*it, eta)) {
-	    muons.erase(it);
+    unsigned int i = 0;
+    while (i < muons.size()) {
+        if (!isWithinEta(muons[i], eta)) {
+            muons.erase(muons.begin() + i);
+	}
+    	else {
+            i++;
 	}
     }
 }
@@ -86,7 +89,7 @@ bool MuonSystem::areOppositeCharged() {
 
 double MuonSystem::getDimuonPt() {
     if (getNumMuons() == 2) { 
-	return muons[0]->P4().Pt() + muons[1]->P4().Pt();
+	return (muons[0]->P4() + muons[1]->P4()).Pt();
     }
     return 0;
 }
@@ -103,19 +106,15 @@ double MuonSystem::getDimuonMass() {
 }
 
 bool MuonSystem::isNearZMass() {
-    return abs(getDimuonMass() - 91.876) < 8;
+    return std::abs(getDimuonMass() - 91.876) < 8;
 }
 
 bool MuonSystem::existsZBoson(std::vector<Track*> tracks, double eta, double pTThreshold) {
     cutUnisolatedMuons(tracks);
     cutEta(eta);
     if (getNumMuons() == 2) {
-	if (areOppositeCharged()) {
-	    if (isAbovePtThreshold(pTThreshold)) {
-		if (isNearZMass()) {
-		    return true;
-		}
-	    }
+	if (areOppositeCharged() && isAbovePtThreshold(pTThreshold) && isNearZMass()) {
+	    return true;
 	}
     }
     return false;
@@ -124,4 +123,3 @@ bool MuonSystem::existsZBoson(std::vector<Track*> tracks, double eta, double pTT
 std::vector<Muon*> MuonSystem::getMuons() {
     return muons;
 }
-

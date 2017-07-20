@@ -1,6 +1,7 @@
 #include "ISRTagger.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include <TLorentzVector.h>
 
@@ -15,7 +16,7 @@ double ISRTagger::pTRatio(Jet* iJet, Jet* jJet) {
 }
 
 double ISRTagger::getDeltaEta(Jet* iJet, Jet* jJet) {
-    return fabs(iJet->P4().Eta() - jJet->P4().Eta());
+    return std::abs(iJet->P4().Eta() - jJet->P4().Eta());
 }
 
 double ISRTagger::deltaEta(Jet* jet, std::vector<Jet*> jets) {

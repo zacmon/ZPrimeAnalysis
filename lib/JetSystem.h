@@ -17,6 +17,7 @@ class JetSystem {
     std::vector<Jet*> jets;
     
     JetSystem(TClonesArray* branchJet);
+    JetSystem(TClonesArray* branchJet, std::vector<Muon*> muon);
     ~JetSystem();
     
     bool isEmptyBranch(TClonesArray* branch);
@@ -32,8 +33,23 @@ class JetSystem {
     
     void vetoMuons(std::vector<Muon*> muons);
 
+    bool isWithinEta(Jet* jet, double eta);
+    void cutEta(double eta);
+    bool isAbovePtThreshold(Jet* jet, double pTThreshold);
+    void cutPt(double pTThreshold);
+
+    void removeISR();
+    
     std::vector<Jet*> getJets();
+
+    bool areAbovePtThreshold(double pTThreshold, int numJets);
+    bool areBelowDeltaEta(std::vector<Jet*> leadingJets, double eta);
+    bool areAboveDeltaPhi(std::vector<Jet*> leadingJets, double phi);
+    double getMass(std::vector<Jet*> leadingJets);
+    bool withinMassRange(std::vector<Jet*> leadingJets, double minMass, double maxMass);
+
     std::vector<Jet*> getLeadingJets();
+    bool existsZLeadingJets();
 };
 
 #endif

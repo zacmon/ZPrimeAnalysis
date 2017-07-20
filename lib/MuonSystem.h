@@ -14,24 +14,23 @@ R__LOAD_LIBRARY(libDelphes)
 
 class MuonSystem {
   public:
-    MuonSystem();
     MuonSystem(TClonesArray* branchMuon);
     ~MuonSystem();
-
+    
     bool isEmptyBranch(TClonesArray* branch);
-
+    
     double getNumMuons();
     
     bool isMuonTrack(Muon* muon, Track* track);
     bool isWithinConeP2(Muon* muon, Track* track);
     bool isIsolated(Muon* muon, std::vector<Track*> tracks);
     void cutUnisolatedMuons(std::vector<Track*> tracks);
-
+    
     bool isWithinEta(Muon* muon, double eta);
     void cutEta(double eta);
-
+    
     bool areOppositeCharged();
-
+    
     double getDimuonPt();
     bool isAbovePtThreshold(double pTThreshold);
 

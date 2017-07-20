@@ -14,6 +14,16 @@ JetSystem::JetSystem(TClonesArray* branchJet) {
     }
 }
 
+JetSystem::JetSystem(TClonesArray* branchJet, std::vector<Muon*> muons) {
+    if (!isEmptyBranch(branchJet)) {
+        for (int i(0); i < branchJet->GetEntriesFast(); ++i) {
+            Jet* jet = (Jet*) branchJet->At(i);
+            jets.push_back(jet);
+        }
+    }
+    vetoMuons(muons);
+}
+
 JetSystem::~JetSystem() {
 }
 
@@ -32,7 +42,7 @@ double JetSystem::getNumJets() {
 
 bool JetSystem::isMuonJet(Jet* jet, std::vector<Muon*> muons) {
     if(muons.size() > 0) {
-	for (auto muon : muons) {
+	for (auto &&muon : muons) {
 	    if (jet->P4().DeltaR(muon->P4()) < 0.5) {
                 return true;
             }
@@ -43,7 +53,7 @@ bool JetSystem::isMuonJet(Jet* jet, std::vector<Muon*> muons) {
 
 bool JetSystem::isQuarkJet(Jet* jet, std::vector<GenParticle*> daughterQuark) {
     if (daughterQuark.size() > 0) {
-	for (auto quark : daughterQuark) {
+	for (auto &&quark : daughterQuark) {
 	    if (jet->P4().DeltaR(quark->P4()) < 0.5) {
 		return true;
 	    }
@@ -140,22 +150,119 @@ void JetSystem::vetoMuons(std::vector<Muon*> muons) {
     }
 }
 
+bool JetSystem::isWithinEta(Jet* jet, double eta) {
+    return std::abs(jet->P4().Eta()) < eta;
+}
+
+void JetSystem::cutEta(double eta) {
+    unsigned int i = 0;
+    while (i < jets.size()) {
+	if (!isWithinEta(jets[i], eta)) {
+	    jets.erase(jets.begin() + i);
+	}
+	else {
+	    i++;
+	}
+    }
+}
+
+bool JetSystem::isAbovePtThreshold(Jet* jet, double pTThreshold) {
+    return jet->P4().Pt() > pTThreshold;
+}
+
+void JetSystem::cutPt(double pTThreshold) {
+    unsigned int i = 0;
+    while (i < jets.size()) {
+	if (!isAbovePtThreshold(jets[i], pTThreshold)) {
+            jets.erase(jets.begin() + i);
+	}
+    	else {
+            i++;
+	}
+    }
+}
+
 std::vector<Jet*> JetSystem::getJets() {
     return jets;
 }
+
+bool JetSystem::areAbovePtThreshold(double pTThreshold, int numJets) {
+    int counter = 0;
+    for (auto &&jet : jets) {
+	if (jet->P4().Pt() > pTThreshold) {
+	    counter++;
+	}
+    }
+    return counter >= numJets;
+}
+
+bool JetSystem::areBelowDeltaEta(std::vector<Jet*> leadingJets, double eta) {
+    if (leadingJets.size() == 2) {
+	return std::abs(leadingJets[0]->P4().Eta() - leadingJets[1]->P4().Eta()) < eta;
+    }
+    return false;
+}
+
+bool JetSystem::areAboveDeltaPhi(std::vector<Jet*> leadingJets, double phi) {
+    if (leadingJets.size() == 2) {
+	return std::abs(leadingJets[0]->P4().Phi() - leadingJets[1]->P4().Phi()) > phi;
+    }
+    return false;
+}
+
+double JetSystem::getMass(std::vector<Jet*> leadingJets) {
+    TLorentzVector momentum(0.0, 0.0, 0.0, 0.0);
+    for (auto &&jet : leadingJets) {
+	momentum += jet->P4();
+    }
+    return momentum.M();
+}
+
+bool JetSystem::withinMassRange(std::vector<Jet*> leadingJets, double minMass, double maxMass) {
+    double massLeadingJets = getMass(leadingJets);
+    if (massLeadingJets > minMass && massLeadingJets < maxMass) {
+	return true;
+    }
+    return false;
+}
+
+void JetSystem::removeISR() {
+    ISRTagger* taggerISR = new ISRTagger();
+    unsigned int i = 0;
+    while (i < jets.size()) {
+        if (taggerISR->deltaEta(jets[i], jets) > 1) {
+            jets.erase(jets.begin() + i);
+        }
+        else {
+            i++;
+        }
+    }
+} 
 
 std::vector<Jet*> JetSystem::getLeadingJets() {
     ISRTagger* taggerISR = new ISRTagger();
     
     std::vector<Jet*> leadingJets;
     for (unsigned int i(0); i < jets.size(); ++i) {
-	//if (taggerISR->deltaEta(jets[i], jets) > 1) {
-	//    continue;
-	//}
 	leadingJets.push_back(jets[i]);
 	if (leadingJets.size() == 2) {
 	    break;
 	}
     }
     return leadingJets;
+}
+
+bool JetSystem::existsZLeadingJets() {
+    if (getNumJets() < 2) {
+	return false;
+    }
+    if (!areAbovePtThreshold(30, 2)) {
+	return false;
+    }
+    std::vector<Jet*> leadingJets = getLeadingJets();
+    if (areBelowDeltaEta(leadingJets, 1.75) && areAboveDeltaPhi(leadingJets, 1.6)) {
+	if (withinMassRange(leadingJets, 115, 300)) {
+	    return true;
+	}
+    }
 }
