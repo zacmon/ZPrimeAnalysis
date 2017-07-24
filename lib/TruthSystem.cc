@@ -1,15 +1,4 @@
-#include <TruthSystem.h>
-
-#include <vector>
-#include <iostream>
-
-#ifdef __CLING__
-R__LOAD_LIBRARY(libDelphes)
-#include "classes/DelphesClasses.h"
-#include "external/ExRootAnalysis/ExRootTreeReader.h"
-#endif
-
-#inclue <TClonesArray.h>
+#include "TruthSystem.h"
 
 TruthSystem::TruthSystem(TClonesArray* branchParticle) {
     if (!isEmptyBranch(branchParticle)) {
@@ -20,7 +9,41 @@ TruthSystem::TruthSystem(TClonesArray* branchParticle) {
     }
 }
 
+TruthSystem::TruthSystem(TClonesArray* branchParticle, bool print) {
+        if (!isEmptyBranch(branchParticle)) {
+        printParticleHeader();
+        for (int i(0); i < branchParticle->GetEntriesFast(); ++i) {
+            GenParticle* inGenParticle = (GenParticle*) branchParticle->At(i);
+            printParticleInfo(inGenParticle, i);
+            genParticles.push_back(inGenParticle);
+        }
+	std::cout << "\n----------------Finished Printing----------------\n\n" << std::endl;
+    }
+}
+
 TruthSystem::~TruthSystem() {
+}
+
+void TruthSystem::printParticleHeader() {
+    printf("\n \n %6s %3s %4s %1s %3s %4s %6s %6s %6s",
+           "Index", "PID", "Status", "IsPU", "M1", "M2", "D1", "D2", "Charge");
+    printf("%6s %7s %9s %10s %8s %10s %9s %8s %10s %9s %12s %6s %7s %6s %7s %7s %7s",
+           "Mass", "E", "Px", "Py", "Pz", "P", "PT", "Eta", "Phi", "Rapid", "CtgTheta",
+           "D0", "DZ", "T", "X", "Y", "Z");
+ std:cout << "\n--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
+}
+
+void TruthSystem::printParticleInfo(GenParticle* particle, Int_t index) {
+    printf("\n %3d %6d %4d %4d %4d %5d %6d %6d %3d",
+           index, particle -> PID, particle -> Status, particle -> IsPU, particle -> M1, particle -> M2,
+           particle -> D1, particle -> D2, particle -> Charge);
+  printf("%9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %9.2f %7.2f %7.2f %7.2f %7.2f %7.2f",
+         particle -> Mass,
+         particle -> E,particle -> Px, particle -> Py, particle -> Pz,
+         particle -> P, particle -> PT, particle -> Eta, particle -> Phi,
+         particle -> Rapidity, particle -> CtgTheta,
+         particle -> D0, particle -> DZ,
+         particle -> T, particle -> X, particle -> Y, particle -> Z);
 }
 
 bool TruthSystem::isEmptyBranch(TClonesArray* branch) {
@@ -48,57 +71,42 @@ bool TruthSystem::isStable(GenParticle* particle) {
     return particle->Status == 1;
 }
 
-TLorentzVector TruthSystem::getMomentumGenParticle(std::vector<GenParticle*> genParticles) {
-    TLorentzVector momentum(0.0, 0.0, 0.0, 0.0);
-    for (auto particle : genParticles) {
-        momentum += particle->P4();
+//  PYTHIA6 IMPLEMENTATION
+std::vector<GenParticle*> TruthSystem::getZPrimeQuarks() {
+    std::vector<GenParticle*> quarks;
+    int zPrimeIndex = 1e6;
+    for (unsigned int i = 0; i < genParticles.size(); ++i) {
+	if (isZPrimeBoson(genParticles[i])) {
+	    zPrimeIndex = i;
+	}
+	if (zPrimeIndex != 1e6 && genParticles[i]->M1 == zPrimeIndex && !isZPrimeBoson(genParticles[i])) {
+	    quarks.push_back(genParticles[i]);
+	}
+	if (quarks.size() == 2) {
+	    return quarks;
+	}
     }
-    return momentum;
+    return {};
 }
 
-void organizeVector(std::vector<GenParticle> *vectorParticles) {
-    std::sort(vectorParticles->begin(), vectorParticles->end(), [](TruthParticle a, TruthParticle b) {return a.index < b.index;});
-    auto it = std::unique(vectorParticles->begin(), vectorParticles->end(), [](TruthParticle a, TruthParticle b) {return a.index == b.index;});
-    vectorDaughters->erase(it, vectorParticles->end());
-}
+// TODO CHECK CONSERVATION OF MOMENTUM AT EACH STEP
+// TODO RETRIEVE ALL MOTHERS SO ORGANIZE VECTOR DOESN'T HAVE TO EXIST
+std::vector<GenParticle*> TruthSystem::getNextGeneration(GenParticle* mother) {
+    std::vector<GenParticle*> nextGeneration;
 
-std::vector<GenParticle*> TruthSystem::getStableDaughters(GenParticle* parent) {
-    std::vector<GenParticle*> stableDaughters;
-    std::vector<GenParticle*> unstableDaughters;
+    int daughterIndex1 = mother->D1;
+    int daughterIndex2 = mother->D2;
 
-    if (!isStable(parent)) {
-	unstableDaughters.push_back(parent);
-    }
+    GenParticle* daughterParticle1 = genParticles[daughterIndex1];
+    nextGeneration.push_back(genParticles[daughterIndex1]);
 
-    while (unstableDaughters.size()) {
-	for (auto it(unstableDaughters.begin()); it != unstableDaughters.end(); ++it) {
-	    GenParticle* mother = *it;
-	    for (int i = mother->D1; i <= mom->D2; ++i) {
-		GenParticle* daughter = genParticles[i];
-		if (daughter->M1 != genParticles[mother->D1]->M1) {
-		    continue;
-		}
-		if (isStable(daughter)) {
-		    stableDaughters.push_back(daughter);
-		}
-		else {
-		    unstableList.push_back(daughter);
-		}
+    if (!isStable(mother)) {
+        for (int j = daughterIndex1 + 1; j <= daughterIndex2; ++j) {
+	    if (genParticles[j] -> M1 == genParticles[daughterIndex1] -> M1) {
+                nextGeneration.push_back(genParticles[j]);
 	    }
-	    unstableDaughters.erase(it);
-	}
+        }
     }
-    organizeVector(&stableDaughters);
-    return stableDaughters;
-}
 
-std::vector<GenParticle*> TruthSystem::getChargedStableDaughter(GenParticle* parent) {
-    std::vector<GenParticle*> chargedStableDaughters;
-    std::vector<GenParticle*> stableDaughters = getStableDaughters(parent);
-    for (auto daughter : stableDaughters) {
-	if (isCharged(daughter)) {
-	    chargedStableDaughters.push_back(daughter);
-	}
-    }
-    return chargedStableDaughters;
+    return nextGeneration;
 }
