@@ -31,8 +31,9 @@ class JetSystem {
     std::vector<Jet*> getZPrimeJets(std::vector<GenParticle*> quarks);
     std::vector<std::vector<Jet*>> getSortedJets(std::vector<GenParticle*> quarks);
     
-    void vetoMuons(std::vector<Muon*> muons);
-
+//    void vetoMuons(std::vector<Muon*> muons);
+    int vetoMuons(std::vector<Muon*> muons);
+    
     bool isWithinEta(Jet* jet, double eta);
     void cutEta(double eta);
     bool isAbovePtThreshold(Jet* jet, double pTThreshold);
@@ -43,11 +44,16 @@ class JetSystem {
     std::vector<Jet*> getJets();
 
     bool areAbovePtThreshold(double pTThreshold, int numJets);
+    double getDeltaEta(std::vector<Jet*> leadingJets);
     bool areBelowDeltaEta(std::vector<Jet*> leadingJets, double eta);
+    double getDeltaPhi(std::vector<Jet*> leadingJets);
     bool areAboveDeltaPhi(std::vector<Jet*> leadingJets, double phi);
     double getMass(std::vector<Jet*> leadingJets);
     bool withinMassRange(std::vector<Jet*> leadingJets, double minMass, double maxMass);
 
+    TLorentzVector getMomentum();
+    TLorentzVector getMomentum(std::vector<Jet*> leadingJets);
+    
     std::vector<Jet*> getLeadingJets();
     bool existsZLeadingJets();
 };

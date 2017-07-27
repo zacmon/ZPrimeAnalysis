@@ -141,13 +141,28 @@ std::vector<std::vector<Jet*>> JetSystem::getSortedJets(std::vector<GenParticle*
     }
     return sortedJets;
 }
-
+/*
 void JetSystem::vetoMuons(std::vector<Muon*> muons) {
     for (auto it(jets.begin()); it != jets.end(); ++it) {
 	if (isMuonJet(*it, muons)) {
 	    jets.erase(it);
 	}
     }
+}
+*/
+int JetSystem::vetoMuons(std::vector<Muon*> muons) {
+    int numMuonJets = 0;
+    unsigned int i = 0;
+    while (i < jets.size()) {
+	if (isMuonJet(jets[i], muons)) {
+	    numMuonJets++;
+            jets.erase(jets.begin() + i);
+        }
+	else {
+	    ++i;
+	}
+    }
+    return numMuonJets;
 }
 
 bool JetSystem::isWithinEta(Jet* jet, double eta) {
@@ -161,7 +176,7 @@ void JetSystem::cutEta(double eta) {
 	    jets.erase(jets.begin() + i);
 	}
 	else {
-	    i++;
+	    ++i;
 	}
     }
 }
@@ -177,7 +192,7 @@ void JetSystem::cutPt(double pTThreshold) {
             jets.erase(jets.begin() + i);
 	}
     	else {
-            i++;
+            ++i;
 	}
     }
 }
@@ -196,16 +211,30 @@ bool JetSystem::areAbovePtThreshold(double pTThreshold, int numJets) {
     return counter >= numJets;
 }
 
+double JetSystem::getDeltaEta(std::vector<Jet*> leadingJets) {
+    if (leadingJets.size() == 2) {
+	return std::abs(leadingJets[0]->P4().Eta() - leadingJets[1]->P4().Eta());
+    }
+    return -999;
+}
+
 bool JetSystem::areBelowDeltaEta(std::vector<Jet*> leadingJets, double eta) {
     if (leadingJets.size() == 2) {
-	return std::abs(leadingJets[0]->P4().Eta() - leadingJets[1]->P4().Eta()) < eta;
+	return getDeltaEta(leadingJets) < eta;
     }
     return false;
 }
 
+double JetSystem::getDeltaPhi(std::vector<Jet*> leadingJets) {
+    if (leadingJets.size() == 2) {
+	return std::abs(leadingJets[0]->P4().Phi() - leadingJets[1]->P4().Phi());
+    }
+    return -999;
+}
+
 bool JetSystem::areAboveDeltaPhi(std::vector<Jet*> leadingJets, double phi) {
     if (leadingJets.size() == 2) {
-	return std::abs(leadingJets[0]->P4().Phi() - leadingJets[1]->P4().Phi()) > phi;
+	return getDeltaPhi(leadingJets) > phi;
     }
     return false;
 }
@@ -239,6 +268,22 @@ void JetSystem::removeISR() {
     }
 } 
 
+TLorentzVector JetSystem::getMomentum() {
+    TLorentzVector momentum(0.0, 0.0, 0.0, 0.0);
+    for (auto &&jet : jets) {
+        momentum += jet->P4();
+    }
+    return momentum;
+}
+
+TLorentzVector JetSystem::getMomentum(std::vector<Jet*> leadingJets) {
+    TLorentzVector momentum(0.0, 0.0, 0.0, 0.0);
+    for (auto &&jet : leadingJets) {
+        momentum += jet->P4();
+    }
+    return momentum;
+}
+
 std::vector<Jet*> JetSystem::getLeadingJets() {
     ISRTagger* taggerISR = new ISRTagger();
     
@@ -265,4 +310,5 @@ bool JetSystem::existsZLeadingJets() {
 	    return true;
 	}
     }
+    return false;
 }

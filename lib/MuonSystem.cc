@@ -25,7 +25,7 @@ bool MuonSystem::isEmptyBranch(TClonesArray* branch) {
     }
 }
 
-double MuonSystem::getNumMuons() {
+int MuonSystem::getNumMuons() {
     return muons.size();
 }
 
@@ -80,6 +80,22 @@ void MuonSystem::cutEta(double eta) {
     }
 }
 
+bool MuonSystem::isAbovePt(Muon* muon, double pT) {
+    return std::abs(muon->P4().Pt()) < pT;
+}
+
+void MuonSystem::cutPt(double pT) {
+    unsigned int i = 0;
+    while (i < muons.size()) {
+        if (!isAbovePt(muons[i], pT)) {
+            muons.erase(muons.begin() + i);
+        }
+        else {
+            i++;
+        }
+    }
+}
+
 bool MuonSystem::areOppositeCharged() {
     if (getNumMuons() == 2) {
 	return muons[0]->Charge != muons[1]->Charge;
@@ -87,33 +103,45 @@ bool MuonSystem::areOppositeCharged() {
     return false;
 }
 
-double MuonSystem::getDimuonPt() {
-    if (getNumMuons() == 2) { 
-	return (muons[0]->P4() + muons[1]->P4()).Pt();
+TLorentzVector MuonSystem::getMomentum() {
+    TLorentzVector momentum(0.0, 0.0, 0.0, 0.0);
+    for (auto &&muon : muons) {
+	momentum += muon->P4();
     }
-    return 0;
+    return momentum;
+}
+
+double MuonSystem::getDimuonPt() {
+    if (getNumMuons() == 2) {
+	return getMomentum().Pt();
+    }
+    return -9999;
+}
+
+double MuonSystem::getDimuonMass() {
+    if (getNumMuons() == 2) {
+	return getMomentum().M();
+    }
+    return -999;
 }
 
 bool MuonSystem::isAbovePtThreshold(double pTThreshold) {
     return getDimuonPt() > pTThreshold;
 }
 
-double MuonSystem::getDimuonMass() {
-    if (getNumMuons() == 2) {
-	return (muons[0]->P4() + muons[1]->P4()).M();
-    }
-    return 0;
+double MuonSystem::distanceToZMass() {
+    return std::abs(getMomentum().M() - 91.876);
 }
 
-bool MuonSystem::isNearZMass() {
-    return std::abs(getDimuonMass() - 91.876) < 8;
+bool MuonSystem::isNearZMass(double distance) {
+    return distanceToZMass() < distance;
 }
 
 bool MuonSystem::existsZBoson(std::vector<Track*> tracks, double eta, double pTThreshold) {
     cutUnisolatedMuons(tracks);
     cutEta(eta);
     if (getNumMuons() == 2) {
-	if (areOppositeCharged() && isAbovePtThreshold(pTThreshold) && isNearZMass()) {
+	if (areOppositeCharged() && isAbovePtThreshold(pTThreshold) && isNearZMass(8)) {
 	    return true;
 	}
     }
