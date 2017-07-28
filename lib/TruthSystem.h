@@ -10,27 +10,42 @@ R__LOAD_LIBRARY(libDelphes)
 #include <vector>
 
 #include <TClonesArray.h>
+#include <TLorentzVector.h>
+
 
 class TruthSystem {
-  public:
-    std::vector<GenParticle*> genParticles;
+public:
+struct TruthParticle {
+GenParticle* particle;
+unsigned int index;
+};
+std::vector<GenParticle*> genParticles;
 
-    TruthSystem(TClonesArray* branchParticle);
-    TruthSystem(TClonesArray* branchParticle, bool print);
-    ~TruthSystem();
+TruthSystem(TClonesArray* branchParticle);
+TruthSystem(TClonesArray* branchParticle, bool print);
+~TruthSystem();
 
-    void printParticleHeader();
-    void printParticleInfo(GenParticle* particle, Int_t index);
-    
-    bool isEmptyBranch(TClonesArray* branch);
-    bool isZBoson(GenParticle* particle);
-    bool isZPrimeBoson(GenParticle* particle);
-    bool isCharged(GenParticle* particle);
-    bool isStable(GenParticle* particle);
+void printParticleHeader();
+void printParticleInfo(GenParticle* particle, Int_t index);
 
-    std::vector<GenParticle*> getZPrimeQuarks();
-    
-    std::vector<GenParticle*> getNextGeneration(GenParticle* mother);
+bool isEmptyBranch(TClonesArray* branch);
+bool isZBoson(GenParticle* particle);
+bool isZPrimeBoson(GenParticle* particle);
+bool isCharged(GenParticle* particle);
+bool isStable(GenParticle* particle);
+
+std::vector<GenParticle*> getZPrimeQuarks();
+std::vector<GenParticle*> getZMuons();
+
+std::vector<TruthSystem::TruthParticle> getQuarks();
+std::vector<TruthSystem::TruthParticle> getNextGeneration(TruthSystem::TruthParticle mother);
+
+void organizeVector(std::vector<TruthSystem::TruthParticle> *daughters);
+bool areDaughtersStable(std::vector<TruthSystem::TruthParticle> daughters);
+std::vector<TruthSystem::TruthParticle> getDaughters(TruthSystem::TruthParticle truthParticle);
+std::vector<GenParticle*> getChargedStableDaughters(std::vector<GenParticle*> daughters);
+
+TLorentzVector getMomentum(std::vector<GenParticle*> particles);
 };
 
 #endif

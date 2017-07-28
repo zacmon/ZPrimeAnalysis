@@ -12,4 +12,5 @@
 *.so
 
 *.C~
+
 lib/HistogramSystem.cc

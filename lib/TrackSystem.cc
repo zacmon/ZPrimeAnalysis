@@ -37,3 +37,10 @@ std::vector<Track*> TrackSystem::getTracks() {
     return tracks;
 }
 
+TLorentzVector TrackSystem::getMomentum() {
+    TLorentzVector momentum(0.0, 0.0, 0.0, 0.0);
+    for (auto &&track : tracks) {
+	momentum += track->P4();
+    }
+    return momentum;
+}

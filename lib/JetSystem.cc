@@ -213,28 +213,28 @@ bool JetSystem::areAbovePtThreshold(double pTThreshold, int numJets) {
 
 double JetSystem::getDeltaEta(std::vector<Jet*> leadingJets) {
     if (leadingJets.size() == 2) {
-	return std::abs(leadingJets[0]->P4().Eta() - leadingJets[1]->P4().Eta());
+	return leadingJets[0]->P4().Eta() - leadingJets[1]->P4().Eta();
     }
     return -999;
 }
 
 bool JetSystem::areBelowDeltaEta(std::vector<Jet*> leadingJets, double eta) {
     if (leadingJets.size() == 2) {
-	return getDeltaEta(leadingJets) < eta;
+	return std::abs(getDeltaEta(leadingJets)) < eta;
     }
     return false;
 }
 
 double JetSystem::getDeltaPhi(std::vector<Jet*> leadingJets) {
     if (leadingJets.size() == 2) {
-	return std::abs(leadingJets[0]->P4().Phi() - leadingJets[1]->P4().Phi());
+	return leadingJets[0]->P4().DeltaPhi(leadingJets[1]->P4());
     }
     return -999;
 }
 
 bool JetSystem::areAboveDeltaPhi(std::vector<Jet*> leadingJets, double phi) {
     if (leadingJets.size() == 2) {
-	return getDeltaPhi(leadingJets) > phi;
+	return std::abs(getDeltaPhi(leadingJets)) > phi;
     }
     return false;
 }

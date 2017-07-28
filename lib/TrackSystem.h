@@ -20,10 +20,9 @@ class TrackSystem {
     ~TrackSystem();
 
     bool isEmptyBranch(TClonesArray* branch);
-
     double getNumTracks();
-        
     std::vector<Track*> getTracks();
+    TLorentzVector getMomentum();
 };
 
 #endif
