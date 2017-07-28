@@ -87,7 +87,7 @@ TLorentzVector JetSystem::getConstituentsMomentum(Jet* jet) {
     return momentum;
 }
 
-std::vector<Jet*> JetSystem::getZPrimeJets(std::vector<GenParticle*> daughterQuark) {
+std::vector<Jet*> JetSystem::getZPrimeMinJets(std::vector<GenParticle*> daughterQuark) {
     Jet* jetQuark1 = nullptr;
     Jet* jetQuark2 = nullptr;
     double minDeltaR1 = 0.5;
@@ -118,6 +118,20 @@ std::vector<Jet*> JetSystem::getZPrimeJets(std::vector<GenParticle*> daughterQua
         matchedJets.push_back(jetQuark2);
     }
 
+    return matchedJets;
+}
+
+std::vector<Jet*> JetSystem::getZPrimeJets(std::vector<GenParticle*> quarks) {
+    double jetRadius = 0.5;
+    std::vector<Jet*> matchedJets;
+
+    for (auto &&jet : jets) {
+	double deltaRQuark1 = jet->P4().DeltaR(quarks[0]->P4());
+	double deltaRQuark2 = jet->P4().DeltaR(quarks[1]->P4());
+	if (deltaRQuark1 < jetRadius || deltaRQuark2 < jetRadius) {
+	    matchedJets.push_back(jet);
+	}
+    }
     return matchedJets;
 }
 

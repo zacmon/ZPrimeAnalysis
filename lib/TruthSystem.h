@@ -15,37 +15,31 @@ R__LOAD_LIBRARY(libDelphes)
 
 class TruthSystem {
 public:
-struct TruthParticle {
-GenParticle* particle;
-unsigned int index;
-};
-std::vector<GenParticle*> genParticles;
+    std::vector<GenParticle*> genParticles;
 
-TruthSystem(TClonesArray* branchParticle);
-TruthSystem(TClonesArray* branchParticle, bool print);
-~TruthSystem();
-
-void printParticleHeader();
-void printParticleInfo(GenParticle* particle, Int_t index);
-
-bool isEmptyBranch(TClonesArray* branch);
-bool isZBoson(GenParticle* particle);
-bool isZPrimeBoson(GenParticle* particle);
-bool isCharged(GenParticle* particle);
-bool isStable(GenParticle* particle);
-
-std::vector<GenParticle*> getZPrimeQuarks();
-std::vector<GenParticle*> getZMuons();
-
-std::vector<TruthSystem::TruthParticle> getQuarks();
-std::vector<TruthSystem::TruthParticle> getNextGeneration(TruthSystem::TruthParticle mother);
-
-void organizeVector(std::vector<TruthSystem::TruthParticle> *daughters);
-bool areDaughtersStable(std::vector<TruthSystem::TruthParticle> daughters);
-std::vector<TruthSystem::TruthParticle> getDaughters(TruthSystem::TruthParticle truthParticle);
-std::vector<GenParticle*> getChargedStableDaughters(std::vector<GenParticle*> daughters);
-
-TLorentzVector getMomentum(std::vector<GenParticle*> particles);
+    TruthSystem(TClonesArray* branchParticle);
+    TruthSystem(TClonesArray* branchParticle, bool print);
+    ~TruthSystem();
+    
+    void printParticleHeader();
+    void printParticleInfo(GenParticle* particle, Int_t index);
+    
+    bool isEmptyBranch(TClonesArray* branch);
+    bool isZBoson(GenParticle* particle);
+    bool isZPrimeBoson(GenParticle* particle);
+    bool isCharged(GenParticle* particle);
+    bool isStable(GenParticle* particle);
+    
+    std::vector<GenParticle*> getZPrimeQuarks();
+    std::vector<GenParticle*> getZMuons();
+    
+    void getNextGeneration(GenParticle* mother, std::vector<GenParticle*> *unstableDaughters, std::vector<GenParticle*> *stableDaughters);
+    void organizeVector(std::vector<GenParticle*> *vectorPair);
+    std::vector<GenParticle*> getDaughters(GenParticle* mother);
+    std::vector<GenParticle*> getDaughters(std::vector<GenParticle*> mothers);
+    std::vector<GenParticle*> getChargedStableDaughters(std::vector<GenParticle*> daughters);
+    
+    TLorentzVector getMomentum(std::vector<GenParticle*> particles);
 };
 
 #endif

@@ -27,7 +27,8 @@ class JetSystem {
     bool isQuarkJet(Jet* jet, std::vector<GenParticle*> quarks);
     
     TLorentzVector getConstituentsMomentum(Jet* jet);
-    
+
+    std::vector<Jet*> getZPrimeMinJets(std::vector<GenParticle*> quarks);
     std::vector<Jet*> getZPrimeJets(std::vector<GenParticle*> quarks);
     std::vector<std::vector<Jet*>> getSortedJets(std::vector<GenParticle*> quarks);
     
