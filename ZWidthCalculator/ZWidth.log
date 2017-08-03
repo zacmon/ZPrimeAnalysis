@@ -7,6 +7,7 @@
 10GeV, 0.7 width= 1.58545
 10GeV, 0.8 width= 2.07079
 10GeV, 0.9 width= 2.62085
+10GeV, 1 width= 3.23561
 
 20GeV, 0.1 width= 0.0758612
 20GeV, 0.2 width= 0.303445
@@ -17,6 +18,7 @@
 20GeV, 0.7 width= 3.7172
 20GeV, 0.8 width= 4.85511
 20GeV, 0.9 width= 6.14475
+20GeV, 1 width= 7.58612
 
 30GeV, 0.1 width= 0.116889
 30GeV, 0.2 width= 0.467555
@@ -27,6 +29,7 @@
 30GeV, 0.7 width= 5.72754
 30GeV, 0.8 width= 7.48087
 30GeV, 0.9 width= 9.46798
+30GeV, 1 width= 11.6889
 
 40GeV, 0.1 width= 0.157297
 40GeV, 0.2 width= 0.629187
@@ -37,6 +40,7 @@
 40GeV, 0.7 width= 7.70754
 40GeV, 0.8 width= 10.067
 40GeV, 0.9 width= 12.741
+40GeV, 1 width= 15.7297
 
 50GeV, 0.1 width= 0.197457
 50GeV, 0.2 width= 0.789829
@@ -47,6 +51,7 @@
 50GeV, 0.7 width= 9.6754
 50GeV, 0.8 width= 12.6373
 50GeV, 0.9 width= 15.994
+50GeV, 1 width= 19.7457
 
 60GeV, 0.1 width= 0.237494
 60GeV, 0.2 width= 0.949975
@@ -57,6 +62,7 @@
 60GeV, 0.7 width= 11.6372
 60GeV, 0.8 width= 15.1996
 60GeV, 0.9 width= 19.237
+60GeV, 1 width= 23.7494
 
 70GeV, 0.1 width= 0.277459
 70GeV, 0.2 width= 1.10984
@@ -67,6 +73,7 @@
 70GeV, 0.7 width= 13.5955
 70GeV, 0.8 width= 17.7574
 70GeV, 0.9 width= 22.4742
+70GeV, 1 width= 27.7459
 
 80GeV, 0.1 width= 0.317381
 80GeV, 0.2 width= 1.26952
@@ -77,6 +84,7 @@
 80GeV, 0.7 width= 15.5517
 80GeV, 0.8 width= 20.3124
 80GeV, 0.9 width= 25.7078
+80GeV, 1 width= 31.7381
 
 90GeV, 0.1 width= 0.357273
 90GeV, 0.2 width= 1.42909
@@ -87,6 +95,7 @@
 90GeV, 0.7 width= 17.5064
 90GeV, 0.8 width= 22.8655
 90GeV, 0.9 width= 28.9391
+90GeV, 1 width= 35.7273
 
 100GeV, 0.1 width= 0.397144
 100GeV, 0.2 width= 1.58858
@@ -97,6 +106,7 @@
 100GeV, 0.7 width= 19.4601
 100GeV, 0.8 width= 25.4172
 100GeV, 0.9 width= 32.1687
+100GeV, 1 width= 39.7144
 
 250GeV, 0.1 width= 0.994421
 250GeV, 0.2 width= 3.97768
@@ -107,4 +117,5 @@
 250GeV, 0.7 width= 48.7266
 250GeV, 0.8 width= 63.6429
 250GeV, 0.9 width= 80.5481
+250GeV, 1 width= 99.4421
 
