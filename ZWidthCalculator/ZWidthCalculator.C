@@ -1,8 +1,12 @@
-
-
 #include <cmath>
 #include <iostream>
+#include <vector>
 
+#include <TGraph.h>
+#include <TMultiGraph.h>
+#include <TAxis.h>
+#include <TCanvas.h>
+#include <TLegend.h>
 double PI = 3.141592653589793238462643383279502884197;
 
 void ZWidthCalculator() {
@@ -23,10 +27,42 @@ void ZWidthCalculator() {
 	}
     }
     
+    double x_arr[massZPrime.size()];
+    std::copy(massZPrime.begin(), massZPrime.end(), x_arr);
+    
+    TMultiGraph* mg = new TMultiGraph();
+    TLegend* legend = new TLegend(0.32, 0.27, 0.2, 0.15);
+    
     for (unsigned int i(0); i < massZPrime.size(); ++i) {
 	for (unsigned int j(0); j < couplings.size(); ++j) {
 	    std::cout << massZPrime[i] << "GeV, " << couplings[j] << " width= " << widthSM[i][j] << std::endl;
 	}
 	std::cout << "\n";
     }
+    for (unsigned int i = 0; i < couplings.size(); ++i) {
+	double y_arr[massZPrime.size()];
+	for (unsigned int j = 0; j < massZPrime.size(); ++j) {
+	    y_arr[j] = widthSM[j][i] / x_arr[j];
+	}
+	TGraph* g = new TGraph(massZPrime.size(), x_arr, y_arr);
+	g->SetMarkerStyle(8);
+	g->SetMarkerSize(2);
+	g->SetLineWidth(3);
+	if (i < 9) {
+	    g->SetMarkerColor(i+1);
+	}
+	else {
+	    std::cout << "here" << std::endl;
+	    g->SetMarkerColor(i+20);
+	}
+	legend->AddEntry(g, Form("%s %.1f", "g_{SM}=", couplings[i]), "p");
+	mg->Add(g);
+	
+    }
+    
+    mg->Draw("APL");
+    mg->GetXaxis()->SetTitle("m_{Z'} (GeV)");
+    mg->GetYaxis()->SetTitle("#Gamma_{SM} / m_{Z'}");
+    legend->Draw();
+    gPad->Modified();
 }
